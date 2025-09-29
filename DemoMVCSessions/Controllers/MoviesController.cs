@@ -1,5 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Diagnostics;
 using System.IO;
+using System.Numerics;
+using System.Text;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace DemoMVCSessions.Controllers
@@ -50,13 +54,29 @@ namespace DemoMVCSessions.Controllers
             }
             else
             {
-                return Content($"Movie With Name = {name} and Id = {id}" ,"text/html");
+                return Content($"Movie With Name = {name} and Id = {id}", "text/html");
             }
         }
         public string Index()
         {
             return "Hello From Index";
         }
+        #region Model Binding
+        //Is the Process of automatically mapping incoming HTTP request data to action method parameters or model properties
+        //Model Data Can Be 
+            //Simple Data
+            //Complex Data
+            //Mixed Data
+            //Collection
+        //Value Providers [In Order] 
+        //Form ,Route Data, Query String ,Request Body ,RequestHeader
+        //[HttpPost]
+        //public  IActionResult TestModelBinding([FromQuery] int id, string name)
+        //{
+        //    return Content($"Movie With Name = {name} and Id = {id}  ", "text/html");
+        //}
+
+        #endregion
 
     }
 }
