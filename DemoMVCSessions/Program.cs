@@ -5,9 +5,12 @@ namespace DemoMVCSessions
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            #region ConfigureServices  
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            #endregion
+            #region Configure 
 
             var app = builder.Build();
 
@@ -30,7 +33,9 @@ namespace DemoMVCSessions
                 pattern: "{controller=Home}/{action=Index}/{id?}")
                 .WithStaticAssets();
 
-            app.Run();
+            app.Run(); 
+            #endregion
+
         }
     }
 }
