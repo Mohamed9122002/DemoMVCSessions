@@ -30,7 +30,7 @@ namespace DemoMVCSessions
             app.UseAuthorization();
 
             app.MapStaticAssets();
-            app.UseStaticFiles();
+            //app.UseStaticFiles();
             //app.MapControllerRoute(
             //    name: "default",
             //    pattern: "{controller}/{action}/{Id?}", // Id is Optional 
