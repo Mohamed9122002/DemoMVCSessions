@@ -1,4 +1,5 @@
 using Demo.DataAccess.Data.Contexts;
+using Demo.DataAccess.Repositories.DepartmentRepo;
 using Microsoft.EntityFrameworkCore;
 
 namespace Demo.Presentation
@@ -17,6 +18,7 @@ namespace Demo.Presentation
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
+            builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
             #endregion
 
             var app = builder.Build();
