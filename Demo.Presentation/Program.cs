@@ -1,3 +1,8 @@
+using Demo.BLL.Services;
+using Demo.DataAccess.Data.Contexts;
+using Demo.DataAccess.Repositories.DepartmentRepo;
+using Microsoft.EntityFrameworkCore;
+
 namespace Demo.Presentation
 {
     public class Program
@@ -7,7 +12,15 @@ namespace Demo.Presentation
             var builder = WebApplication.CreateBuilder(args);
 
             #region Add Services To The Container 
-            builder.Services.AddControllersWithViews(); 
+            builder.Services.AddControllersWithViews();
+            // 1. Register To Services In Dependency Injection Container
+            //builder.Services.AddScoped<ApplicationDbContext>();
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+            {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+            });
+            builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+            builder.Services.AddScoped<IDepartmentService, DepartmentService>();
             #endregion
 
             var app = builder.Build();
