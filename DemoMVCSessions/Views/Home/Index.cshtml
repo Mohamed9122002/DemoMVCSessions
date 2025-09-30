@@ -1,8 +1,36 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+	Layout = null;
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<!DOCTYPE html>
+
+<html>
+<head>
+	<meta name="viewport" content="width=device-width" />
+	<title>Index</title>
+	<link href="~/lib/bootstrap/css/bootstrap.css" rel="stylesheet" />
+</head>
+<body>
+	<header>
+		<center>
+			<nav class="mt-2">
+				<a href="/Home/Index" class="btn btn-primary m-2">Home</a>
+				<a href="/Home/Privacy" class="btn btn-warning m-2">Privacy</a>
+			</nav>
+		</center>
+
+	</header>
+	<section>
+		<center>
+			<div class="mt-2 bg-primary p-5 w-75">
+				<h1>Welcome To Home Page</h1>
+			</div>
+		</center>
+	</section>
+	<footer>
+		<center>
+			<p class="mt-2 ">Copyright &copy; @DateTime.Now.Year - My ASP.NET Application</p>
+		</center>
+	</footer>
+</body>
+</html>

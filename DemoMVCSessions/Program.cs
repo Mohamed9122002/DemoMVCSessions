@@ -30,6 +30,7 @@ namespace DemoMVCSessions
             app.UseAuthorization();
 
             app.MapStaticAssets();
+            app.UseStaticFiles();
             //app.MapControllerRoute(
             //    name: "default",
             //    pattern: "{controller}/{action}/{Id?}", // Id is Optional 
@@ -38,7 +39,7 @@ namespace DemoMVCSessions
             //    );
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Movies}/{action=Index}/{Id:regex(^\\d{{2}}$)?}" 
+                pattern: "{controller=Home}/{action=Index}/{Id:regex(^\\d{{2}}$)?}" 
                 );
             app.Run(); 
             #endregion
