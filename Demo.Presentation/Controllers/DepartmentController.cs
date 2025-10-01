@@ -1,16 +1,60 @@
-﻿using Demo.BLL.Services;
+﻿using Demo.BLL.DataTransferObject;
+using Demo.BLL.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Demo.Presentation.Controllers
 {
-    public class DepartmentController (IDepartmentService _departmentService) :Controller
+    public class DepartmentController(IDepartmentService _departmentService ,ILogger<DepartmentController> _logger,IWebHostEnvironment _environment) : Controller
     {
         // Get All Department 
         [HttpGet]
-        public IActionResult  Index()
+        public IActionResult Index()
         {
             var departments = _departmentService.GetAll();
             return View(departments);
         }
+        #region Create Department 
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View();
+        }
+        [HttpPost] 
+        public IActionResult Create(CreatedDepartmentDto departmentDto)
+        {
+            if (ModelState.IsValid) // server side validation 
+            {
+                try
+                {
+                    int result = _departmentService.CreateDepartment(departmentDto);
+                    if (result > 0)
+                        return RedirectToAction(nameof(Index));
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, "Department Can't be Created");
+                      
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Log Ex 
+                    if (_environment.IsDevelopment())
+                    {
+                        //1.Development => Log Error In Console 
+                        //Console.WriteLine(ex);
+                        ModelState.AddModelError(string.Empty,ex.Message);
+                      
+                    }
+                    else
+                    {
+                        //2.Deployment => Log Error File | Table in Database => return Error  View 
+                        _logger.LogError(ex.Message);
+                    }
+                }
+            }
+                return View (departmentDto); 
+            
+        }
+        #endregion
     }
 }
