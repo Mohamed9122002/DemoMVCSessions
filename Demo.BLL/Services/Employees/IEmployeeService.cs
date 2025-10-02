@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Demo.BLL.Services.Employee
+namespace Demo.BLL.Services.Employees
 {
     public interface IEmployeeService
     {

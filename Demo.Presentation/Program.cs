@@ -1,8 +1,10 @@
+using Demo.BLL.Profiles;
 using Demo.BLL.Services;
 using Demo.DataAccess.Data.Contexts;
 using Demo.DataAccess.Repositories.DepartmentRepo;
 using Demo.DataAccess.Repositories.EmployeeRepo;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Demo.Presentation
 {
@@ -22,7 +24,9 @@ namespace Demo.Presentation
             });
             builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
             builder.Services.AddScoped<IDepartmentService, DepartmentService>();
-            builder.Services.AddScoped<IEmployeeRepository , EmployeeRepository>();  
+            builder.Services.AddScoped<IEmployeeRepository , EmployeeRepository>();
+            //builder.Services.AddAutoMapper(typeof(MappingProfiles).Assembly);
+            builder.Services.AddAutoMapper(M => M.AddProfile(new MappingProfiles()));
             #endregion
 
             var app = builder.Build();
