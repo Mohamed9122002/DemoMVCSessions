@@ -19,5 +19,6 @@ namespace Demo.DataAccess.Data.Contexts
         }
 
         public DbSet<Department> Departments { get; set; }
+        public DbSet<Employee> Employees { get; set; } 
     }
 }
