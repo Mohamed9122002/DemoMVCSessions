@@ -1,6 +1,7 @@
 using Demo.BLL.Services;
 using Demo.DataAccess.Data.Contexts;
 using Demo.DataAccess.Repositories.DepartmentRepo;
+using Demo.DataAccess.Repositories.EmployeeRepo;
 using Microsoft.EntityFrameworkCore;
 
 namespace Demo.Presentation
@@ -21,6 +22,7 @@ namespace Demo.Presentation
             });
             builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
             builder.Services.AddScoped<IDepartmentService, DepartmentService>();
+            builder.Services.AddScoped<IEmployeeRepository , EmployeeRepository>();  
             #endregion
 
             var app = builder.Build();
