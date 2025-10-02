@@ -1,5 +1,6 @@
 ﻿using Demo.BLL.DataTransferObject;
 using Demo.BLL.Services;
+using Demo.Presentation.ViewModels.DepartmentViewModel;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Demo.Presentation.Controllers
@@ -64,6 +65,68 @@ namespace Demo.Presentation.Controllers
             var department = _departmentService.GetDepartmentById(Id.Value);
             if (department is null) return NotFound();
             return View(department);
+        }
+        #endregion
+        #region Edit Department 
+        [HttpGet]
+        public IActionResult Edit(int ? Id )
+        {
+            if (!Id.HasValue) return BadRequest();
+            var department = _departmentService.GetDepartmentById(Id.Value);
+            if (department is null) return NotFound();
+            var departmentViewModel = new DepartmentEditViewModel()
+            {
+                Code = department.Code,
+                Name = department.Name,
+                Description = department.Description,
+                DateOfCreation = department.DateOfCreation,
+            };
+            return View(departmentViewModel);
+        }
+        [HttpPost]
+        public IActionResult Edit (DepartmentEditViewModel departmentEditViewModel,[FromRoute] int id)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var UpdatedDepartment = new UpdatedDepartmentDto()
+                    {
+                        Id = id,
+                        Code = departmentEditViewModel.Code,
+                        Name = departmentEditViewModel.Name,
+                        Description = departmentEditViewModel.Description,
+                        DateOfCreation = departmentEditViewModel.DateOfCreation,
+                    };
+                    int result = _departmentService.UpdatedDepartment(UpdatedDepartment);
+                    if (result > 0) return RedirectToAction(nameof(Index));
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, "Department is Not Updated");
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                    // Log Ex 
+                    if (_environment.IsDevelopment())
+                    {
+                        //1.Development => Log Error In Console 
+                        //Console.WriteLine(ex);
+                        ModelState.AddModelError(string.Empty, ex.Message);
+
+                    }
+                    else
+                    {
+                        //2.Deployment => Log Error File | Table in Database => return Error  View 
+                        _logger.LogError(ex.Message);
+                        return View("ErrorView", ex);
+                    }
+
+                }
+            }
+
+            return View(departmentEditViewModel);
         }
         #endregion
 
