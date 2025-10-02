@@ -2,6 +2,7 @@
 using Demo.BLL.Services.Employees;
 using Demo.DataAccess.Data.Migrations;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 
 namespace Demo.Presentation.Controllers
 {
@@ -57,7 +58,15 @@ namespace Demo.Presentation.Controllers
 
         }
         #endregion
-
+        #region Employee Details 
+        [HttpGet]
+        public IActionResult Details ( int? Id)
+        {
+            if (!Id.HasValue) return BadRequest();
+            var employee = _employeeService.GetEmployeeId(Id.Value);
+            return employee is null ? NotFound() : View(employee);
+        }
+        #endregion
 
     }
 }
