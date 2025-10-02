@@ -1,5 +1,6 @@
 using Demo.BLL.Profiles;
 using Demo.BLL.Services;
+using Demo.BLL.Services.Employees;
 using Demo.DataAccess.Data.Contexts;
 using Demo.DataAccess.Repositories.DepartmentRepo;
 using Demo.DataAccess.Repositories.EmployeeRepo;
@@ -27,6 +28,7 @@ namespace Demo.Presentation
             builder.Services.AddScoped<IEmployeeRepository , EmployeeRepository>();
             //builder.Services.AddAutoMapper(typeof(MappingProfiles).Assembly);
             builder.Services.AddAutoMapper(M => M.AddProfile(new MappingProfiles()));
+            builder.Services.AddScoped<IEmployeeService, EmployeeService>();
             #endregion
 
             var app = builder.Build();
