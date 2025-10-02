@@ -43,7 +43,7 @@ namespace Demo.BLL.Services
             return department.ToDepartmentDetailsDto();
         }
         // Create New Department 
-        public int AddDepartment(CreatedDepartmentDto departmentDto)
+        public int CreateDepartment(CreatedDepartmentDto departmentDto)
         {
             // reverse Mapping 
             //_departmentRepository.Add(departmentDto);

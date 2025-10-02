@@ -28,6 +28,11 @@ namespace Demo.BLL.Factories
             {
                 Id = department.Id,
                 Name = department.Name,
+                Code = department.Code,
+                Description = department.Description,
+                CreatedBy = department.CreatedBy,
+                LastModifiedBy = department.LastModifiedBy,
+                LastModifiedOn = DateOnly.FromDateTime((DateTime)department.LastModifiedOn),
                 CreatedOn = DateOnly.FromDateTime((DateTime)department.CreatedOn),
             };
         }
