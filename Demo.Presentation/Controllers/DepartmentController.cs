@@ -129,6 +129,40 @@ namespace Demo.Presentation.Controllers
             return View(departmentEditViewModel);
         }
         #endregion
+        #region Delete Department 
+
+        [HttpPost]
+         public IActionResult Delete (int id)
+        {
+            if(id == 0) return BadRequest();
+            try
+            {
+                bool Deleted = _departmentService.DepleteDepartment(id);
+                if (Deleted) return RedirectToAction(nameof(Index));
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Department is Not Deleted");
+                    return RedirectToAction(nameof(Delete),new {id });
+                }
+            }
+            catch (Exception ex)
+            {
+                if (_environment.IsDevelopment())
+                {
+                    //1.Development => Log Error In Console 
+                    //Console.WriteLine(ex);
+                    ModelState.AddModelError(string.Empty, ex.Message);
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    //2.Deployment => Log Error File | Table in Database => return Error  View 
+                    _logger.LogError(ex.Message);
+                    return View("ErrorView", ex);
+                }
+            }
+        }
+        #endregion
 
     }
 }
