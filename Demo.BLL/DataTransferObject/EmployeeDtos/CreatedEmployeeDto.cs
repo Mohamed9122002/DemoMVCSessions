@@ -17,8 +17,6 @@ namespace Demo.BLL.DataTransferObject.EmployeeDtos
         public string Name { get; set; } = null!;
         [Range(22, 50, ErrorMessage = "Age Must be Between 18 and 60")]
         public int Age { get; set; }
-        [RegularExpression(@"^[0-9]{1,3}-[a-zA-Z]{5,10}-[a-zA-Z]{4,10}[a-zA-Z]{5,10}$",
-            ErrorMessage = "Address Must be Like 123-Street-City-Country")]
         public string? Address { get; set; }
         public decimal Salary { get; set; }
         [Display(Name = "Is Active")]
