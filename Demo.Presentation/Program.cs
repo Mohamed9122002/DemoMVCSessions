@@ -4,6 +4,7 @@ using Demo.BLL.Services.Employees;
 using Demo.DataAccess.Data.Contexts;
 using Demo.DataAccess.Repositories.DepartmentRepo;
 using Demo.DataAccess.Repositories.EmployeeRepo;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -16,7 +17,9 @@ namespace Demo.Presentation
             var builder = WebApplication.CreateBuilder(args);
 
             #region Add Services To The Container 
-            builder.Services.AddControllersWithViews();
+            builder.Services.AddControllersWithViews(options=> {
+                options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+            });
             // 1. Register To Services In Dependency Injection Container
             //builder.Services.AddScoped<ApplicationDbContext>();
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
