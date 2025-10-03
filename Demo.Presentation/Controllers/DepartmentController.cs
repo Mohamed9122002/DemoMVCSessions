@@ -11,6 +11,8 @@ namespace Demo.Presentation.Controllers
         [HttpGet]
         public IActionResult Index()
         {
+            //ViewData["Message"] = "HelloFromViewData";
+            //ViewBag.Message = "Hello From ";
             var departments = _departmentService.GetAll();
             return View(departments);
         }
