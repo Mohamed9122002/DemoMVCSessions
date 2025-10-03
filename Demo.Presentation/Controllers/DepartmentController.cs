@@ -21,12 +21,19 @@ namespace Demo.Presentation.Controllers
             return View();
         }
         [HttpPost] 
-        public IActionResult Create(CreatedDepartmentDto departmentDto)
+        public IActionResult Create(DepartmentViewModel departmentView)
         {
             if (ModelState.IsValid) // server side validation 
             {
                 try
                 {
+                    var departmentDto = new CreatedDepartmentDto()
+                    {
+                        Name = departmentView.Name,
+                        Code = departmentView.Code, 
+                        DateOfCreation = departmentView.DateOfCreation, 
+                        Description = departmentView.Description, 
+                    };
                     int result = _departmentService.CreateDepartment(departmentDto);
                     if (result > 0)
                         return RedirectToAction(nameof(Index));
@@ -53,7 +60,7 @@ namespace Demo.Presentation.Controllers
                     }
                 }
             }
-                return View (departmentDto); 
+                return View (departmentView); 
             
         }
         #endregion
@@ -74,7 +81,7 @@ namespace Demo.Presentation.Controllers
             if (!Id.HasValue) return BadRequest();
             var department = _departmentService.GetDepartmentById(Id.Value);
             if (department is null) return NotFound();
-            var departmentViewModel = new DepartmentEditViewModel()
+            var departmentViewModel = new DepartmentViewModel()
             {
                 Code = department.Code,
                 Name = department.Name,
@@ -84,7 +91,7 @@ namespace Demo.Presentation.Controllers
             return View(departmentViewModel);
         }
         [HttpPost]
-        public IActionResult Edit (DepartmentEditViewModel departmentEditViewModel,[FromRoute] int id)
+        public IActionResult Edit (DepartmentViewModel departmentEditViewModel,[FromRoute] int id)
         {
             if (ModelState.IsValid)
             {
