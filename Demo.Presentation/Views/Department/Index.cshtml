@@ -5,7 +5,9 @@
 }
 @* <p>@ViewData["Message"]</p> *@
 @* <p>@ViewBag.Message</p> *@
-
+@if (!string.IsNullOrWhiteSpace(TempData["Message"] as string)) {
+<p class="bg-success">@TempData["Message"]</p>
+}
 <h1 class="my-3">All Departments</h1>
 
 <a class="btn btn-primary" asp-controller="Department" asp-action="Create">Create Department</a>

@@ -37,13 +37,14 @@ namespace Demo.Presentation.Controllers
                         Description = departmentView.Description, 
                     };
                     int result = _departmentService.CreateDepartment(departmentDto);
+                    string Message;
                     if (result > 0)
-                        return RedirectToAction(nameof(Index));
+                        Message = $"Department {departmentView.Name}Is Created Successful";
                     else
-                    {
-                        ModelState.AddModelError(string.Empty, "Department Can't be Created");
-                      
-                    }
+                        Message = $"Department {departmentView.Name} can not Be Created";
+                    TempData["Mes"] =Message;
+                    return RedirectToAction(nameof(Index));
+               
                 }
                 catch (Exception ex)
                 {
