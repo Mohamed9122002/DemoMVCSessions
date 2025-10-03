@@ -127,6 +127,37 @@ namespace Demo.Presentation.Controllers
 
             }
         }
-
+        [HttpPost]
+        public IActionResult Delete(int id)
+        {
+            if (id == 0) return BadRequest();
+            try
+            {
+                bool isDeleted = _employeeService.DeleteEmployee(id);
+                if (isDeleted)
+                    return RedirectToAction(nameof(Index));
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "employee Not Deleted");
+                    return RedirectToAction(nameof(Delete), new {  id });
+                }
+            }
+            catch (Exception ex)
+            {
+                if (_environment.IsDevelopment())
+                {
+                    // 1. Environment Development => Log Error in Console and Return same view with error message
+                    ModelState.AddModelError(string.Empty, ex.Message);
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    // 2. Environment Deployment
+                    // Log Error in File | Table in DataBase And Return Error View
+                    _logger.LogError(ex.Message);
+                    return View("ErrorView", ex);
+                }
+            }
+        }
     }
 }
