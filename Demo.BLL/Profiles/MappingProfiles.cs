@@ -9,26 +9,27 @@ using System.Threading.Tasks;
 
 namespace Demo.BLL.Profiles
 {
-    public class MappingProfiles :Profile
+    public class MappingProfiles : Profile
     {
         public MappingProfiles()
         {
             CreateMap<DateTime, DateOnly>().ConvertUsing(src => DateOnly.FromDateTime(src));
             CreateMap<Employee, EmployeeDto>()
-                .ForMember(dest => dest.Gender, options => options.MapFrom(src => src.Gender))
-                .ForMember(dest => dest.EmployeeType, options => options.MapFrom(src => src.EmployeeType));
+                .ForMember(dist => dist.Gender, options => options.MapFrom(src => src.Gender))
+                .ForMember(dist => dist.EmployeeType, options => options.MapFrom(src => src.EmployeeType))
+                .ForMember(dist => dist.Department, Options => Options.MapFrom(src => src.Department != null ? src.Department.Name : null));
             // Convert Employee To EmployeeDetailsDTO
             CreateMap<Employee, EmployeeDetailsDto>()
-                .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender))
-                .ForMember(dest => dest.EmployeeType, opt => opt.MapFrom(src => src.EmployeeType))
-                .ForMember(dest => dest.HiringDate, opt => opt.MapFrom(src => DateOnly.FromDateTime(src.HiringDate)))
-                    .ReverseMap();
+                .ForMember(dist => dist.Gender, opt => opt.MapFrom(src => src.Gender))
+                .ForMember(dist => dist.EmployeeType, opt => opt.MapFrom(src => src.EmployeeType))
+                .ForMember(dist => dist.HiringDate, opt => opt.MapFrom(src => DateOnly.FromDateTime(src.HiringDate)))
+                .ForMember(dist => dist.Department, Options => Options.MapFrom(src => src.Department != null ? src.Department.Name : null)).ReverseMap();
             //  Convert CreateEmployeeDTO To Employee
             CreateMap<CreatedEmployeeDto, Employee>()
-                .ForMember(dest => dest.HiringDate, options => options.MapFrom(src => src.HiringDate.ToDateTime(TimeOnly.MinValue)));
+                .ForMember(dist => dist.HiringDate, options => options.MapFrom(src => src.HiringDate.ToDateTime(TimeOnly.MinValue)));
             // Convert UpdatedEmployeeDTO To Employee
             CreateMap<UpdatedEmployeeDto, Employee>()
-                                .ForMember(dest => dest.HiringDate, options => options.MapFrom(src => src.HiringDate.ToDateTime(TimeOnly.MinValue)));
+                                .ForMember(dist => dist.HiringDate, options => options.MapFrom(src => src.HiringDate.ToDateTime(TimeOnly.MinValue)));
 
         }
     }

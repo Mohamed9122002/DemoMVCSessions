@@ -19,7 +19,7 @@ namespace Demo.BLL.DataTransferObject.EmployeeDtos
         public string? Address { get; set; }
         public string? Email { get; set; }
         public string? PhoneNumber { get; set; }
-        public DateOnly HiringDate { get; set; } 
+        public DateOnly HiringDate { get; set; }
         public string Gender { get; set; }
 
         public string EmployeeType { get; set; }
@@ -27,5 +27,7 @@ namespace Demo.BLL.DataTransferObject.EmployeeDtos
         public DateOnly? CreatedOn { get; set; }
         public int LastModifiedBy { get; set; }
         public DateOnly? LastModifiedOn { get; set; }
+        public int? DepartmentId { get; set; }
+        public string? Department { get; set; }
     }
 }
