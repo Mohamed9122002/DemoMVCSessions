@@ -12,22 +12,17 @@ namespace Demo.BLL.Services.Employees
 {
     public class EmployeeService(IEmployeeRepository _employeeRepository ,IMapper _mapper) : IEmployeeService
     {
-        public IEnumerable<EmployeeDto> GetAllEmployees(bool withTracking =false)
+        public IEnumerable<EmployeeDto> GetAllEmployees(string? EmployeeSearchName ) 
         {
-            var employees = _employeeRepository.GetAll(withTracking);
-            //return Employees.Select(E => new EmployeeDto()
-            //{
-            //    Id = E.Id,
-            //    Name = E.Name,
-            //    Age = E.Age,
-            //    Email = E.Email,
-            //    IsActive = E.IsActive,
-            //    Salary = E.Salary,
-            //    EmployeeType = E.EmployeeType.ToString(),
-            //    Gender = E.Gender.ToString()
-            //});
+            //var employees = _employeeRepository.GetAll(E=>E.Name.ToLower().Contains(EmployeeSearchName.ToLower()));
+            IEnumerable<Employee> employees;
+            if (string.IsNullOrWhiteSpace(EmployeeSearchName))
+                employees = _employeeRepository.GetAll();
+            else 
+                employees = _employeeRepository.GetAll(E => E.Name.ToLower().Contains(EmployeeSearchName.ToLower()));
             var employeesDto = _mapper.Map<IEnumerable<Employee>, IEnumerable<EmployeeDto>>(employees);
             return employeesDto;
+
         }
 
         public EmployeeDetailsDto? GetEmployeeId(int id)
@@ -62,8 +57,5 @@ namespace Demo.BLL.Services.Employees
 
             }
         }
-
-
-
     }
 }
