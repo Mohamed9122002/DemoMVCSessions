@@ -1,5 +1,6 @@
 using Demo.BLL.Profiles;
 using Demo.BLL.Services;
+using Demo.BLL.Services.AttachmentServices;
 using Demo.BLL.Services.Employees;
 using Demo.DataAccess.Data.Contexts;
 using Demo.DataAccess.Repositories;
@@ -35,6 +36,7 @@ namespace Demo.Presentation
             builder.Services.AddAutoMapper(M => M.AddProfile(new MappingProfiles()));
             builder.Services.AddScoped<IEmployeeService, EmployeeService>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddTransient<IAttachmentService , AttachmentService>();
             #endregion
 
             var app = builder.Build();
