@@ -11,6 +11,8 @@ namespace Demo.Presentation.Controllers
         [HttpGet]
         public IActionResult Index()
         {
+            //ViewData["Message"] = "HelloFromViewData";
+            //ViewBag.Message = "Hello From ";
             var departments = _departmentService.GetAll();
             return View(departments);
         }
@@ -21,20 +23,28 @@ namespace Demo.Presentation.Controllers
             return View();
         }
         [HttpPost] 
-        public IActionResult Create(CreatedDepartmentDto departmentDto)
+        public IActionResult Create(DepartmentViewModel departmentView)
         {
             if (ModelState.IsValid) // server side validation 
             {
                 try
                 {
-                    int result = _departmentService.CreateDepartment(departmentDto);
-                    if (result > 0)
-                        return RedirectToAction(nameof(Index));
-                    else
+                    var departmentDto = new CreatedDepartmentDto()
                     {
-                        ModelState.AddModelError(string.Empty, "Department Can't be Created");
-                      
-                    }
+                        Name = departmentView.Name,
+                        Code = departmentView.Code, 
+                        DateOfCreation = departmentView.DateOfCreation, 
+                        Description = departmentView.Description, 
+                    };
+                    int result = _departmentService.CreateDepartment(departmentDto);
+                    string Message;
+                    if (result > 0)
+                        Message = $"Department {departmentView.Name}Is Created Successful";
+                    else
+                        Message = $"Department {departmentView.Name} can not Be Created";
+                    TempData["Mes"] =Message;
+                    return RedirectToAction(nameof(Index));
+               
                 }
                 catch (Exception ex)
                 {
@@ -53,7 +63,7 @@ namespace Demo.Presentation.Controllers
                     }
                 }
             }
-                return View (departmentDto); 
+                return View (departmentView); 
             
         }
         #endregion
@@ -74,7 +84,7 @@ namespace Demo.Presentation.Controllers
             if (!Id.HasValue) return BadRequest();
             var department = _departmentService.GetDepartmentById(Id.Value);
             if (department is null) return NotFound();
-            var departmentViewModel = new DepartmentEditViewModel()
+            var departmentViewModel = new DepartmentViewModel()
             {
                 Code = department.Code,
                 Name = department.Name,
@@ -84,7 +94,7 @@ namespace Demo.Presentation.Controllers
             return View(departmentViewModel);
         }
         [HttpPost]
-        public IActionResult Edit (DepartmentEditViewModel departmentEditViewModel,[FromRoute] int id)
+        public IActionResult Edit (DepartmentViewModel departmentEditViewModel,[FromRoute] int id)
         {
             if (ModelState.IsValid)
             {

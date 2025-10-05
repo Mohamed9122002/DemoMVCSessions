@@ -1,7 +1,14 @@
+using Demo.BLL.Profiles;
 using Demo.BLL.Services;
+using Demo.BLL.Services.AttachmentServices;
+using Demo.BLL.Services.Employees;
 using Demo.DataAccess.Data.Contexts;
+using Demo.DataAccess.Repositories;
 using Demo.DataAccess.Repositories.DepartmentRepo;
+using Demo.DataAccess.Repositories.EmployeeRepo;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Demo.Presentation
 {
@@ -12,15 +19,24 @@ namespace Demo.Presentation
             var builder = WebApplication.CreateBuilder(args);
 
             #region Add Services To The Container 
-            builder.Services.AddControllersWithViews();
+            builder.Services.AddControllersWithViews(options=> {
+                options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+            });
             // 1. Register To Services In Dependency Injection Container
             //builder.Services.AddScoped<ApplicationDbContext>();
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+                options.UseLazyLoadingProxies();
             });
             builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
             builder.Services.AddScoped<IDepartmentService, DepartmentService>();
+            builder.Services.AddScoped<IEmployeeRepository , EmployeeRepository>();
+            //builder.Services.AddAutoMapper(typeof(MappingProfiles).Assembly);
+            builder.Services.AddAutoMapper(M => M.AddProfile(new MappingProfiles()));
+            builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddTransient<IAttachmentService , AttachmentService>();
             #endregion
 
             var app = builder.Build();

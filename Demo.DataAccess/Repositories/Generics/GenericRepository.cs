@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,9 +17,9 @@ namespace Demo.DataAccess.Repositories.Generics
         public IEnumerable<TEntity> GetAll(bool withTracking = false)
         {
             if (withTracking)
-                return _dbContext.Set<TEntity>().ToList();
+                return _dbContext.Set<TEntity>().Where(E=>E.IsDeleted !=true).ToList();
             else
-                return _dbContext.Set<TEntity>().AsNoTracking().ToList();
+                return _dbContext.Set<TEntity>().Where(E => E.IsDeleted != true).AsNoTracking().ToList();
         }
 
         public TEntity? GetById(int id)
@@ -26,22 +27,26 @@ namespace Demo.DataAccess.Repositories.Generics
             return _dbContext.Set<TEntity>().Find(id);
         }
         // Updated 
-        public int Update(TEntity  entity)
+        public void Update(TEntity  entity)
         { 
             _dbContext.Set<TEntity>().Update(entity);
-            return _dbContext.SaveChanges();
+
         }
         // Delete 
-        public int Remove(TEntity entity)
+        public void Remove(TEntity entity)
         {
             _dbContext.Set<TEntity>().Remove(entity);
-            return _dbContext.SaveChanges();
+
         }
         // Insert 
-        public int Add(TEntity  entity)
+        public void Add(TEntity  entity)
         {
             _dbContext.Set<TEntity>().Add(entity);
-            return _dbContext.SaveChanges();
+        }
+
+        public IEnumerable<TEntity> GetAll(Expression<Func<TEntity, bool>> predicate)
+        {
+           return _dbContext.Set<TEntity>().Where(predicate).ToList();
         }
     }
 }

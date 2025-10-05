@@ -1,5 +1,6 @@
 ﻿using Demo.BLL.DataTransferObject;
 using Demo.BLL.Factories;
+using Demo.DataAccess.Repositories;
 using Demo.DataAccess.Repositories.DepartmentRepo;
 using System;
 using System.Collections.Generic;
@@ -9,15 +10,14 @@ using System.Threading.Tasks;
 
 namespace Demo.BLL.Services
 {
-    public class DepartmentService(IDepartmentRepository departmentRepository) : IDepartmentService
+    public class DepartmentService(IUnitOfWork _unitOfWork) : IDepartmentService
     {
         // Constructor Mapping 
         // Extension Method Mapping
-        private readonly IDepartmentRepository _departmentRepository = departmentRepository;
         // get All 
         public IEnumerable<DepartmentDto> GetAll()
         {
-            var departments = _departmentRepository.GetAll();
+            var departments = _unitOfWork.departmentRepository.GetAll();
             // Convert Department to DepartmentDto =>Mapping 
             #region Manual Mapping 
             //var departmentsDto = departments.Select(d => new DepartmentDto
@@ -35,7 +35,7 @@ namespace Demo.BLL.Services
         // get by Id 
         public DepartmentDetailsDto GetDepartmentById(int id)
         {
-            var department = _departmentRepository.GetById(id);
+            var department = _unitOfWork.departmentRepository.GetById(id);
             if (department == null)
                 throw new Exception($"Department with Id {id} not found.");
 
@@ -48,20 +48,23 @@ namespace Demo.BLL.Services
             // reverse Mapping 
             //_departmentRepository.Add(departmentDto);
             var department = departmentDto.ToEntity();
-            return _departmentRepository.Add(department);
+            _unitOfWork.departmentRepository.Add(department);
+            return _unitOfWork.SaveChange();
         }
         // Updated Department 
         public int UpdatedDepartment(UpdatedDepartmentDto departmentDto)
         {
-            return _departmentRepository.Update(departmentDto.ToEntity());
+            _unitOfWork.departmentRepository.Update(departmentDto.ToEntity());
+            return _unitOfWork.SaveChange();
         }
         // Delete Department 
         public bool DepleteDepartment(int id)
         {
-            var department = _departmentRepository.GetById(id);
+            var department = _unitOfWork.departmentRepository.GetById(id);
             if (department == null)
                 throw new Exception($"Department with Id {id} not found.");
-            var result = _departmentRepository.Remove(department);
+            _unitOfWork.departmentRepository.Remove(department);
+            var result = _unitOfWork.SaveChange();
             return result > 0 ? true : false;
         }
 
