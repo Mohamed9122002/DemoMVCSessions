@@ -3,9 +3,11 @@ using Demo.BLL.Services;
 using Demo.BLL.Services.AttachmentServices;
 using Demo.BLL.Services.Employees;
 using Demo.DataAccess.Data.Contexts;
+using Demo.DataAccess.Models.IdentityModel;
 using Demo.DataAccess.Repositories;
 using Demo.DataAccess.Repositories.DepartmentRepo;
 using Demo.DataAccess.Repositories.EmployeeRepo;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,7 +21,8 @@ namespace Demo.Presentation
             var builder = WebApplication.CreateBuilder(args);
 
             #region Add Services To The Container 
-            builder.Services.AddControllersWithViews(options=> {
+            builder.Services.AddControllersWithViews(options =>
+            {
                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
             });
             // 1. Register To Services In Dependency Injection Container
@@ -31,12 +34,15 @@ namespace Demo.Presentation
             });
             builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
             builder.Services.AddScoped<IDepartmentService, DepartmentService>();
-            builder.Services.AddScoped<IEmployeeRepository , EmployeeRepository>();
+            builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
             //builder.Services.AddAutoMapper(typeof(MappingProfiles).Assembly);
             builder.Services.AddAutoMapper(M => M.AddProfile(new MappingProfiles()));
             builder.Services.AddScoped<IEmployeeService, EmployeeService>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-            builder.Services.AddTransient<IAttachmentService , AttachmentService>();
+            builder.Services.AddTransient<IAttachmentService, AttachmentService>();
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
             #endregion
 
             var app = builder.Build();
@@ -57,7 +63,7 @@ namespace Demo.Presentation
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Department}/{action=Index}/{id?}");
+                pattern: "{controller=Account}/{action=Register}");
 
             #endregion
             app.Run();
