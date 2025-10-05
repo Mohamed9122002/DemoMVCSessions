@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Demo.BLL.DataTransferObject.EmployeeDtos;
+using Demo.BLL.Services.AttachmentServices;
 using Demo.DataAccess.Models.EmployeeModel;
 using Demo.DataAccess.Repositories;
 using Demo.DataAccess.Repositories.EmployeeRepo;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Demo.BLL.Services.Employees
 {
-    public class EmployeeService(IUnitOfWork _unitOfWork, IMapper _mapper) : IEmployeeService
+    public class EmployeeService(IUnitOfWork _unitOfWork, IMapper _mapper, IAttachmentService _attachmentService) : IEmployeeService
     {
         public IEnumerable<EmployeeDto> GetAllEmployees(string? EmployeeSearchName)
         {
@@ -35,6 +36,10 @@ namespace Demo.BLL.Services.Employees
         {
             // Convert CreateEmployeeDTO To Employee
             var employee = _mapper.Map<CreatedEmployeeDto, Employee>(employeeDto);
+            if (employeeDto.Image is not null)
+            {
+                employee.ImageName = _attachmentService.Upload(employeeDto.Image, "Images");
+            }
             // Add Employee To Database
             _unitOfWork.employeeRepository.Add(employee);  // Add Locally 
             // Delete // Updated 

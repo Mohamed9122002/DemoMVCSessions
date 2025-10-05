@@ -43,7 +43,9 @@ namespace Demo.Presentation.Controllers
                         IsActive = viewModel.IsActive, 
                         PhoneNumber = viewModel.PhoneNumber, 
                         Salary = viewModel.Salary ,
-                        DepartmentId = viewModel.DepartmentId
+                        DepartmentId = viewModel.DepartmentId,
+                        Image = viewModel.Image,
+                        
                     };
                     int result = _employeeService.CreateEmployee(employeeDto);
                     if (result > 0)
