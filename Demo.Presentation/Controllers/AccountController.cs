@@ -8,7 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Demo.Presentation.Controllers
 {
-    public class AccountController(UserManager<ApplicationUser> _userManager ,SignInManager<ApplicationUser> _signInManager) : Controller
+    public class AccountController(UserManager<ApplicationUser> _userManager, SignInManager<ApplicationUser> _signInManager) : Controller
     {
         // Register 
         #region Register  
@@ -62,17 +62,17 @@ namespace Demo.Presentation.Controllers
                 {
                     var result = _signInManager.PasswordSignInAsync(user, viewModel.Password, viewModel.RememberMe, false).Result;
                     if (result.Succeeded)
-                      return  RedirectToAction(nameof(HomeController.Index), "Home");
+                        return RedirectToAction(nameof(HomeController.Index), "Home");
                 }
 
 
-            } 
-                return View(viewModel);
+            }
+            return View(viewModel);
         }
         #endregion
         #region SignOut
         [HttpGet]
-        public new  IActionResult SignOut()
+        public new IActionResult SignOut()
         {
             _signInManager.SignOutAsync();
             return RedirectToAction(nameof(HomeController.Index), "Home");
@@ -83,16 +83,16 @@ namespace Demo.Presentation.Controllers
         {
             return View();
         }
-        [HttpPost] 
+        [HttpPost]
         public IActionResult ForgetPassword(ForgetPasswordViewModel viewModel)
         {
             if (!ModelState.IsValid) return View(viewModel);
             var user = _userManager.FindByEmailAsync(viewModel.Email).Result;
-            if(user is not null)
+            if (user is not null)
             {
                 var Token = _userManager.GeneratePasswordResetTokenAsync(user).Result;
                 /// Create Url  
-                var ResetPasswordLink = Url.Action("ResetPassword", "Account", new { email =viewModel.Email,Token},Request.Scheme);
+                var ResetPasswordLink = Url.Action("ResetPassword", "Account", new { email = viewModel.Email, Token }, Request.Scheme);
                 var email = new Email()
                 {
                     To = viewModel.Email,
@@ -116,5 +116,44 @@ namespace Demo.Presentation.Controllers
         {
             return View();
         }
+        #region Reset Password   
+        [HttpGet]
+        public IActionResult ResetPassword(string email, string token)
+        {
+            TempData["email"] = email;
+            TempData["token"] = token;
+            return View();
+        }
+        [HttpPost]
+        public IActionResult ResetPassword(ResetPasswordViewModel viewModel)
+        {
+            if (!ModelState.IsValid) return View(viewModel);
+            string email = TempData["email"] as string ?? string.Empty;
+            string token = TempData["token"] as string ?? string.Empty;
+            var user = _userManager.FindByEmailAsync(email).Result;
+            if (user is not null)
+            {
+                var result = _userManager.ResetPasswordAsync(user, token, viewModel.Password).Result;
+                if (result.Succeeded)
+                {
+                    return RedirectToAction(nameof(Login));
+                }
+                else
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                    return View(viewModel);
+                }
+
+            }
+            return View(nameof(ResetPassword), viewModel);
+
+
+        }
+
+        #endregion
     }
+
 }
