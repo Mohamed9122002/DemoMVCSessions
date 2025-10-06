@@ -1,5 +1,6 @@
 ﻿using Demo.DataAccess.Models.DepartmentModels;
 using Demo.DataAccess.Models.IdentityModel;
+using Demo.Presentation.Utilities;
 using Demo.Presentation.ViewModels.AuthModel;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -77,5 +78,43 @@ namespace Demo.Presentation.Controllers
             return RedirectToAction(nameof(HomeController.Index), "Home");
         }
         #endregion
+        #region Forget Password 
+        public IActionResult ForgetPassword()
+        {
+            return View();
+        }
+        [HttpPost] 
+        public IActionResult ForgetPassword(ForgetPasswordViewModel viewModel)
+        {
+            if (!ModelState.IsValid) return View(viewModel);
+            var user = _userManager.FindByEmailAsync(viewModel.Email).Result;
+            if(user is not null)
+            {
+                var Token = _userManager.GeneratePasswordResetTokenAsync(user).Result;
+                /// Create Url  
+                var ResetPasswordLink = Url.Action("ResetPassword", "Account", new { email =viewModel.Email,Token},Request.Scheme);
+                var email = new Email()
+                {
+                    To = viewModel.Email,
+                    Subject = "ResetPassword",
+                    Body = ResetPasswordLink
+                };
+                // Send Email 
+                EmailSettings.SendEmail(email);
+                return RedirectToAction(nameof(CheckYourInBox));
+
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Invalid Opeartion");
+            }
+            return View(viewModel);
+        }
+        #endregion
+        [HttpGet]
+        public IActionResult CheckYourInBox()
+        {
+            return View();
+        }
     }
 }
