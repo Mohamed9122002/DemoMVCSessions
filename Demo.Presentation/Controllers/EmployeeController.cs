@@ -5,11 +5,13 @@ using Demo.DataAccess.Data.Migrations;
 using Demo.DataAccess.Models.EmployeeModel;
 using Demo.DataAccess.Models.Shared.Enum;
 using Demo.Presentation.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 
 namespace Demo.Presentation.Controllers
 {
+    [Authorize]
     public class EmployeeController(IEmployeeService _employeeService, ILogger<EmployeeController> _logger, IWebHostEnvironment _environment ) : Controller
     {
         public IActionResult Index(string? EmployeeSearchName )

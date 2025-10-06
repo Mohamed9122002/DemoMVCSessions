@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Drawing;
 
-namespace Demo.Presentation.ViewModels
+namespace Demo.Presentation.ViewModels.AuthModel
 {
     public class RegisterViewModel
     {

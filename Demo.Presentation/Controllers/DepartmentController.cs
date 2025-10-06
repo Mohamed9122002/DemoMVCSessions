@@ -1,10 +1,12 @@
 ﻿using Demo.BLL.DataTransferObject;
 using Demo.BLL.Services;
 using Demo.Presentation.ViewModels.DepartmentViewModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Demo.Presentation.Controllers
 {
+    [Authorize]
     public class DepartmentController(IDepartmentService _departmentService ,ILogger<DepartmentController> _logger,IWebHostEnvironment _environment) : Controller
     {
         // Get All Department 
