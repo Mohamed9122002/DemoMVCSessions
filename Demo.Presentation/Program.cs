@@ -7,6 +7,8 @@ using Demo.DataAccess.Models.IdentityModel;
 using Demo.DataAccess.Repositories;
 using Demo.DataAccess.Repositories.DepartmentRepo;
 using Demo.DataAccess.Repositories.EmployeeRepo;
+using Demo.Presentation.Helpers;
+using Demo.Presentation.Settings;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -58,6 +60,8 @@ namespace Demo.Presentation
                 config.LogoutPath = "/Account/SignOut";
                 config.AccessDeniedPath = "/Home/Error";
             });
+            builder.Services.Configure<MailSetting>(builder.Configuration.GetSection("MailSettings"));
+            builder.Services.AddTransient<IMailService, MailService>();
             #endregion
 
             var app = builder.Build();

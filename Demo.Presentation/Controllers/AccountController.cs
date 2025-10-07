@@ -1,5 +1,6 @@
 ﻿using Demo.DataAccess.Models.DepartmentModels;
 using Demo.DataAccess.Models.IdentityModel;
+using Demo.Presentation.Helpers;
 using Demo.Presentation.Utilities;
 using Demo.Presentation.ViewModels.AuthModel;
 using Microsoft.AspNetCore.Identity;
@@ -8,7 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Demo.Presentation.Controllers
 {
-    public class AccountController(UserManager<ApplicationUser> _userManager, SignInManager<ApplicationUser> _signInManager) : Controller
+    public class AccountController(UserManager<ApplicationUser> _userManager, SignInManager<ApplicationUser> _signInManager ,IMailService _mailService) : Controller
     {
         // Register 
         #region Register  
@@ -100,7 +101,8 @@ namespace Demo.Presentation.Controllers
                     Body = ResetPasswordLink
                 };
                 // Send Email 
-                EmailSettings.SendEmail(email);
+                //EmailSettings.SendEmail(email);
+                _mailService.Send(email);
                 return RedirectToAction(nameof(CheckYourInBox));
 
             }
