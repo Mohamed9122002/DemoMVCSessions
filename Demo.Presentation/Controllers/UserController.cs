@@ -1,5 +1,6 @@
 ﻿using Demo.DataAccess.Models.IdentityModel;
 using Demo.Presentation.ViewModels.UserViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace Demo.Presentation.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class UserController(UserManager<ApplicationUser> _userManager, SignInManager<ApplicationUser> _signInManager) : Controller
     {
         #region GetAll User 

@@ -7,6 +7,7 @@ using Demo.DataAccess.Models.IdentityModel;
 using Demo.DataAccess.Repositories;
 using Demo.DataAccess.Repositories.DepartmentRepo;
 using Demo.DataAccess.Repositories.EmployeeRepo;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -43,7 +44,20 @@ namespace Demo.Presentation
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
                  .AddEntityFrameworkStores<ApplicationDbContext>()
                  .AddDefaultTokenProviders();
-
+            //builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme) // Default Scheme
+            //    .AddCookie( config => 
+            //    {
+            //        config.ExpireTimeSpan = TimeSpan.FromDays(2);
+            //        config.LoginPath = "/Account/Login";
+            //        config.AccessDeniedPath = "Home/Error";
+            //    });
+            builder.Services.ConfigureApplicationCookie(config =>
+            {
+                config.ExpireTimeSpan = TimeSpan.FromDays(2);
+                config.LoginPath = "/Account/Login";
+                config.LogoutPath = "/Account/SignOut";
+                config.AccessDeniedPath = "/Home/Error";
+            });
             #endregion
 
             var app = builder.Build();

@@ -1,10 +1,14 @@
-﻿using Demo.Presentation.ViewModels.UserViewModels;
+﻿using Demo.DataAccess.Models.IdentityModel;
+using Demo.Presentation.ViewModels.UserViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Demo.Presentation.Controllers
 {
-    public class RoleController(RoleManager<IdentityRole> _roleManager) : Controller
+    [Authorize]
+    public class RoleController(RoleManager<IdentityRole> _roleManager ,UserManager<ApplicationUser> _userManager) : Controller
     {
         #region Create 
         [HttpGet]
@@ -13,6 +17,7 @@ namespace Demo.Presentation.Controllers
             return View();
         }
         [HttpPost]
+
         public IActionResult Create(RoleViewModel roleView)
         {
             if (ModelState.IsValid)
@@ -62,10 +67,18 @@ namespace Demo.Presentation.Controllers
             var role = _roleManager.FindByIdAsync(id).Result;
             if (role is null) return NotFound();
             // Mapping 
+            var users = _userManager.Users.ToListAsync().Result;
             var roleViewModel = new RoleViewModel
             {
                 Id = role.Id,
                 Name = role.Name,
+                Users = users.Select(u => new UserRoleViewModel
+                {
+                    UserId = u.Id,
+                    UserName = u.UserName,
+                    IsSelected = _userManager.IsInRoleAsync(u, role.Name).Result
+
+                }).ToList()
             };
 
             return View(roleViewModel);
@@ -76,8 +89,8 @@ namespace Demo.Presentation.Controllers
         {
             var message = string.Empty;
 
-            if (!ModelState.IsValid)
-                return View(roleViewModel);
+            //if (!ModelState.IsValid)
+            //    return View(roleViewModel);
             try
             {
                 // Get User 
@@ -87,6 +100,21 @@ namespace Demo.Presentation.Controllers
                 role.Name = roleViewModel.Name;
                 // Update Role
                 var result = await _roleManager.UpdateAsync(role);
+
+                foreach (var userRole in roleViewModel.Users)
+                {
+                    var user = await _userManager.FindByIdAsync(userRole.UserId);
+                    if(user is not null)
+                    {
+                        if(userRole.IsSelected && !(await _userManager.IsInRoleAsync(user, role.Name)))
+                        {
+                           await _userManager.AddToRoleAsync(user, role.Name);
+                        }else if (!userRole.IsSelected && await _userManager.IsInRoleAsync(user, role.Name))
+                        {
+                            await _userManager.RemoveFromRoleAsync(user, role.Name);
+                        }
+                    }
+                }
                 if (result.Succeeded)
                     return RedirectToAction(nameof(Index));
                 else
